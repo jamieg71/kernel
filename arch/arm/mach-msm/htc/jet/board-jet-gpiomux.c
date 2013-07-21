@@ -14,13 +14,6 @@
 #include <mach/gpiomux.h>
 #include "board-jet.h"
 
-#if 0  /* GSBI2 is not used for I2C */
-static struct gpiomux_setting gsbi2 = {
-	.func = GPIOMUX_FUNC_1,
-	.drv = GPIOMUX_DRV_8MA,
-	.pull = GPIOMUX_PULL_NONE,
-};
-#endif /* GSBI2 is not used for I2C */
 
 static struct gpiomux_setting gsbi3 = {
 	.func = GPIOMUX_FUNC_1,
@@ -36,13 +29,13 @@ static struct gpiomux_setting gsbi4 = {
 };
 #endif
 
-static struct gpiomux_setting gsbi5 = {
+static struct gpiomux_setting gsbi8 = {
 	.func = GPIOMUX_FUNC_1,
-	.drv  = GPIOMUX_DRV_8MA,
+	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
 };
 
-static struct gpiomux_setting gsbi8 = {
+static struct gpiomux_setting gsbi12 = {
 	.func = GPIOMUX_FUNC_1,
 	.drv = GPIOMUX_DRV_8MA,
 	.pull = GPIOMUX_PULL_NONE,
@@ -57,12 +50,6 @@ static struct gpiomux_setting gsbi10 = {
 };
 #endif
 
-static struct gpiomux_setting gsbi12 = {
-	.func = GPIOMUX_FUNC_1,
-	.drv = GPIOMUX_DRV_8MA,
-	.pull = GPIOMUX_PULL_NONE,
-};
-
 static struct gpiomux_setting cdc_mclk = {
 	.func = GPIOMUX_FUNC_1,
 	.drv = GPIOMUX_DRV_8MA,
@@ -76,108 +63,38 @@ static struct gpiomux_setting slimbus = {
 };
 
 static struct msm_gpiomux_config jet_gsbi_configs[] __initdata = {
-#if 0 /* GSBI2 is not used for I2C */
 	{
-		.gpio      = JET_GPIO_VP_I2C_DAT,	/* GSBI2 I2C QUP SDA */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi2,
-		},
-	},
-	{
-		.gpio      = JET_GPIO_VP_I2C_CLK,	/* GSBI2 I2C QUP SCL */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi2,
-		},
-	},
-#endif /* GSBI2 is not used for I2C */
-	{
-		.gpio      = JET_GPIO_TP_I2C_DAT,	/* GSBI3 I2C QUP SDA */
+		.gpio      = JET_GPIO_TP_I2C_SDA,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi3,
 		},
 	},
 	{
-		.gpio      = JET_GPIO_TP_I2C_CLK,	/* GSBI3 I2C QUP SCL */
+		.gpio      = JET_GPIO_TP_I2C_SCL,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi3,
 		},
 	},
-#if 0
 	{
-		.gpio      = JET_GPIO_CAM_I2C_DAT,	/* GSBI4 I2C QUP SDA */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi4,
-		},
-	},
-	{
-		.gpio      = JET_GPIO_CAM_I2C_CLK,	/* GSBI4 I2C QUP SCL */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi4,
-		},
-	},
-#endif
-	{
-		.gpio      = JET_GPIO_NFC_I2C_SDA,	/* GSBI5 I2C QUP SDA */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi5,
-		},
-	},
-	{
-		.gpio      = JET_GPIO_NFC_I2C_SCL,	/* GSBI5 I2C QUP SCL */
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi5,
-		},
-	},
-	{
-		.gpio	   = JET_GPIO_AC_I2C_SDA,	/* GSBI8 I2C QUP SDA */
+		.gpio	   = JET_GPIO_AC_I2C_SDA,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi8,
 		},
 	},
 	{
-		.gpio	   = JET_GPIO_AC_I2C_SCL,	/* GSBI8 I2C QUP SCL */
+		.gpio	   = JET_GPIO_AC_I2C_SCL,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi8,
 		},
 	},
-#if 0
 	{
-		/* GSBI10 SPI QUP JET_GPIO_MCAM_SPI_CLK */
-		.gpio      = JET_GPIO_MCAM_SPI_CLK,
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi10,
-		},
-	},
-	{
-		/* GSBI10 SPI QUP JET_GPIO_MCAM_SPI_CS0 */
-		.gpio      = JET_GPIO_MCAM_SPI_CS0,
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi10,
-		},
-	},
-	{
-		/* GSBI10 SPI QUP JET_GPIO_MCAM_SPI_DI */
-		.gpio      = JET_GPIO_MCAM_SPI_DI,
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi10,
-		},
-	},
-	{
-		/* GSBI10 SPI QUP JET_GPIO_MCAM_SPI_DO */
-		.gpio      = JET_GPIO_MCAM_SPI_DO,
-		.settings = {
-			[GPIOMUX_SUSPENDED] = &gsbi10,
-		},
-	},
-#endif
-	{
-		.gpio      = JET_GPIO_SR_I2C_DAT,	/* GSBI12 I2C QUP SDA */
+		.gpio      = JET_GPIO_SR_I2C_DAT,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi12,
 		},
 	},
 	{
-		.gpio      = JET_GPIO_SR_I2C_CLK,	/* GSBI12 I2C QUP SCL */
+		.gpio      = JET_GPIO_SR_I2C_CLK,	
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &gsbi12,
 		},
@@ -186,13 +103,13 @@ static struct msm_gpiomux_config jet_gsbi_configs[] __initdata = {
 
 static struct msm_gpiomux_config jet_slimbus_configs[] __initdata = {
 	{
-		.gpio	= JET_GPIO_AUD_WCD_SB_CLK,		/* slimbus data */
+		.gpio	= JET_GPIO_AUD_WCD_SB_CLK,		
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &slimbus,
 		},
 	},
 	{
-		.gpio	= JET_GPIO_AUD_WCD_SB_DATA,		/* slimbus clk */
+		.gpio	= JET_GPIO_AUD_WCD_SB_DATA,		
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &slimbus,
 		},
@@ -257,6 +174,156 @@ static struct msm_gpiomux_config wcnss_5wire_interface[] = {
 	},
 };
 
+static struct gpiomux_setting cam_settings[11] = {
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_8MA,
+		.pull = GPIOMUX_PULL_DOWN,
+		.dir = GPIOMUX_IN,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_1, 
+		.drv = GPIOMUX_DRV_8MA,
+		.pull = GPIOMUX_PULL_NONE,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_8MA,
+		.pull = GPIOMUX_PULL_NONE,
+		.dir = GPIOMUX_OUT_LOW,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_1, 
+		.drv = GPIOMUX_DRV_8MA,
+		.pull = GPIOMUX_PULL_NONE,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_2, 
+		.drv = GPIOMUX_DRV_8MA,
+		.pull = GPIOMUX_PULL_NONE,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_4MA,
+		.pull = GPIOMUX_PULL_DOWN,
+		.dir = GPIOMUX_IN,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_2, 
+		.drv = GPIOMUX_DRV_2MA,
+		.pull = GPIOMUX_PULL_NONE,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_2MA,
+		.pull = GPIOMUX_PULL_NONE,
+		.dir = GPIOMUX_IN,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_2MA,
+		.pull = GPIOMUX_PULL_DOWN,
+		.dir = GPIOMUX_IN,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_2MA,
+		.pull = GPIOMUX_PULL_NONE,
+		.dir = GPIOMUX_OUT_HIGH,
+	},
+
+	{
+		.func = GPIOMUX_FUNC_GPIO, 
+		.drv = GPIOMUX_DRV_2MA,
+		.pull = GPIOMUX_PULL_NONE,
+		.dir = GPIOMUX_OUT_LOW,
+	},
+
+};
+
+static struct msm_gpiomux_config jet_cam_configs[] = {
+	{
+		.gpio = JET_GPIO_CAM_MCLK1,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[4], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[2], 
+		},
+	},
+	{
+		.gpio = JET_GPIO_CAM_MCLK0,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[1], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[2], 
+		},
+	},
+	{
+		.gpio = JET_GPIO_CAM_I2C_DAT,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[3], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[2],
+		},
+	},
+	{
+		.gpio = JET_GPIO_CAM_I2C_CLK,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[3], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[2],
+		},
+	},
+	{
+		.gpio = JET_GPIO_RAW_INTR0,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[7], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[8], 
+		},
+	},
+	{
+		.gpio = JET_GPIO_RAW_INTR1,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &cam_settings[7], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[8], 
+		},
+	},
+	
+	{
+		.gpio      = JET_GPIO_MCAM_SPI_CLK,
+		.settings = {
+			[GPIOMUX_ACTIVE] = &cam_settings[6], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[10],
+		},
+	},
+	{
+		.gpio      = JET_GPIO_MCAM_SPI_CS0,
+		.settings = {
+			[GPIOMUX_ACTIVE] = &cam_settings[6], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[10], 
+		},
+	},
+	{
+		.gpio      = JET_GPIO_MCAM_SPI_DI,
+		.settings = {
+			[GPIOMUX_ACTIVE] = &cam_settings[6], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[10],
+		},
+	},
+	{
+		.gpio      = JET_GPIO_MCAM_SPI_DO,
+		.settings = {
+			[GPIOMUX_ACTIVE] = &cam_settings[6], 
+			[GPIOMUX_SUSPENDED] = &cam_settings[10],
+		},
+	},
+};
+
 static struct gpiomux_setting mdp_vsync_suspend_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
@@ -282,32 +349,32 @@ static struct msm_gpiomux_config msm8960_mdp_vsync_configs[] __initdata = {
 #ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
 
 static struct gpiomux_setting mhl_i2c_suspend_cfg = {
-	.func = GPIOMUX_FUNC_GPIO,
-	.drv = GPIOMUX_DRV_8MA,
-	.pull = GPIOMUX_PULL_NONE,
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_NONE,
 };
 
 static struct gpiomux_setting mhl_i2c_active_cfg = {
-	.func = GPIOMUX_FUNC_1,
-	.drv = GPIOMUX_DRV_8MA,
-	.pull = GPIOMUX_PULL_NONE,
+    .func = GPIOMUX_FUNC_1,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_NONE,
 };
 
 static struct msm_gpiomux_config jet_mhl_i2c_configs[] __initdata = {
-	{
-		.gpio = 36,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &mhl_i2c_active_cfg,
-			[GPIOMUX_SUSPENDED] = &mhl_i2c_suspend_cfg,
-		},
-	},
-	{
-		.gpio = 37,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &mhl_i2c_active_cfg,
-			[GPIOMUX_SUSPENDED] = &mhl_i2c_suspend_cfg,
-		},
-	},
+    {
+        .gpio = 36,
+        .settings = {
+            [GPIOMUX_ACTIVE]    = &mhl_i2c_active_cfg,
+            [GPIOMUX_SUSPENDED] = &mhl_i2c_suspend_cfg,
+        },
+    },
+    {
+        .gpio = 37,
+        .settings = {
+            [GPIOMUX_ACTIVE]    = &mhl_i2c_active_cfg,
+            [GPIOMUX_SUSPENDED] = &mhl_i2c_suspend_cfg,
+        },
+    },
 };
 
 static struct gpiomux_setting mhl_suspend_cfg = {
@@ -408,7 +475,7 @@ static struct msm_gpiomux_config cable_detect_usbid_config[] __initdata = {
 			[GPIOMUX_ACTIVE] = &usb_id_cfg,
 			[GPIOMUX_SUSPENDED] = &usb_id_cfg,
 		},
-	},
+	}
 };
 
 int __init jet_gpiomux_init(void)
@@ -420,6 +487,9 @@ int __init jet_gpiomux_init(void)
 		pr_err(KERN_ERR "msm_gpiomux_init failed %d\n", rc);
 		return rc;
 	}
+
+	msm_gpiomux_install(jet_cam_configs,
+			ARRAY_SIZE(jet_cam_configs));
 
 	msm_gpiomux_install(jet_gsbi_configs,
 			ARRAY_SIZE(jet_gsbi_configs));
@@ -433,7 +503,6 @@ int __init jet_gpiomux_init(void)
 #ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
 	msm_gpiomux_install(jet_mhl_i2c_configs,
 			ARRAY_SIZE(jet_mhl_i2c_configs));
-
 	msm_gpiomux_install(jet_hdmi_configs,
 			ARRAY_SIZE(jet_hdmi_configs));
 
@@ -451,4 +520,5 @@ int __init jet_gpiomux_init(void)
 
 	return 0;
 }
+
 

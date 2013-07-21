@@ -166,32 +166,14 @@ static struct platform_device msm_fm_platform_init = {
 	.id   = -1,
 };
 
-#if 0
-#if defined(CONFIG_GPIO_SX150X) || defined(CONFIG_GPIO_SX150X_MODULE)
-enum {
-	GPIO_EXPANDER_IRQ_BASE = (PM8921_IRQ_BASE + PM8921_NR_IRQS),
-	GPIO_EXPANDER_GPIO_BASE = (PM8921_MPP_BASE + PM8921_NR_MPPS),
-	/* CAM Expander */
-	GPIO_CAM_EXPANDER_BASE = GPIO_EXPANDER_GPIO_BASE,
-	GPIO_CAM_GP_STROBE_READY = GPIO_CAM_EXPANDER_BASE,
-	GPIO_CAM_GP_AFBUSY,
-	GPIO_CAM_GP_STROBE_CE,
-	GPIO_CAM_GP_CAM1MP_XCLR,
-	GPIO_CAM_GP_CAMIF_RESET_N,
-	GPIO_CAM_GP_XMT_FLASH_INT,
-	GPIO_CAM_GP_LED_EN1,
-	GPIO_CAM_GP_LED_EN2,
-
-};
-#endif
-#endif
-
 #ifdef CONFIG_I2C
 
 #define MSM_8960_GSBI4_QUP_I2C_BUS_ID 4
 #define MSM_8960_GSBI3_QUP_I2C_BUS_ID 3
+#define MSM_8960_GSBI2_QUP_I2C_BUS_ID 2
 #define MSM_8960_GSBI8_QUP_I2C_BUS_ID 8
 #define MSM_8960_GSBI12_QUP_I2C_BUS_ID 12
+#define MSM_8960_GSBI5_QUP_I2C_BUS_ID 5
 
 #endif
 
@@ -2195,86 +2177,6 @@ static struct attribute_group three_virtual_key_properties_attr_group = {
 	.attrs = three_virtual_key_properties_attrs,
 };
 
-static struct bma250_platform_data gsensor_bma250_platform_data = {
-	.intr = JET_GPIO_GSENSOR_INT,
-	.chip_layout = 1,
-};
-
-static struct akm8975_platform_data compass_platform_data = {
-	.layouts = JET_LAYOUTS,
-};
-
-static struct r3gd20_gyr_platform_data gyro_platform_data = {
-	.fs_range = R3GD20_GYR_FS_2000DPS,
-	.axis_map_x = 1,
-	.axis_map_y = 0,
-	.axis_map_z = 2,
-	.negate_x = 0,
-	.negate_y = 1,
-	.negate_z = 0,
-
-	.poll_interval = 50,
-	.min_interval = R3GD20_MIN_POLL_PERIOD_MS,
-
-	.watermark = 0,
-	.fifomode = 0,
-};
-
-static struct i2c_board_info msm_i2c_gsbi12_info[] = {
-	{
-		I2C_BOARD_INFO(BMA250_I2C_NAME, 0x30 >> 1),
-		.platform_data = &gsensor_bma250_platform_data,
-		.irq = MSM_GPIO_TO_INT(JET_GPIO_GSENSOR_INT),
-	},
-	{
-		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x1A >> 1),
-		.platform_data = &compass_platform_data,
-		.irq = MSM_GPIO_TO_INT(JET_GPIO_COMPASS_INT),
-	},
-	{
-		I2C_BOARD_INFO(R3GD20_GYR_DEV_NAME, 0xD0 >> 1),
-		.platform_data = &gyro_platform_data,
-	},
-};
-
-static struct mpu3050_platform_data mpu3050_data = {
-	.int_config = 0x10,
-	.orientation = {  0,  1, 0,
-			 -1,  0, 0,
-			  0,  0, 1 },
-	.level_shifter = 0,
-
-	.accel = {
-		.get_slave_descr = get_accel_slave_descr,
-		.adapt_num = MSM_8960_GSBI12_QUP_I2C_BUS_ID,
-		.bus = EXT_SLAVE_BUS_SECONDARY,
-		.address = 0x30 >> 1,
-			.orientation = { 1, 0, 0,
-					 0, 1, 0,
-					 0, 0, 1 },
-
-	},
-
-	.compass = {
-		.get_slave_descr = get_compass_slave_descr,
-		.adapt_num = MSM_8960_GSBI12_QUP_I2C_BUS_ID,
-		.bus = EXT_SLAVE_BUS_PRIMARY,
-		.address = 0x1A >> 1,
-			.orientation = { 1, 0, 0,
-					 0, 1, 0,
-					 0, 0, 1 },
-	},
-};
-
-
-static struct i2c_board_info __initdata mpu3050_GSBI12_boardinfo[] = {
-	{
-		I2C_BOARD_INFO("mpu3050", 0xD0 >> 1),
-		.irq = MSM_GPIO_TO_INT(JET_GPIO_GYRO_INT),
-		.platform_data = &mpu3050_data,
-	},
-};
-
 static struct pn544_i2c_platform_data nfc_platform_data = {
 	.irq_gpio = JET_GPIO_NFC_IRQ,
 	.ven_gpio = JET_GPIO_NFC_VEN,
@@ -2290,48 +2192,146 @@ static struct i2c_board_info pn544_i2c_boardinfo[] = {
 	},
 };
 
-static uint8_t cm3629_mapping_table[] = {0x0, 0x3, 0x6, 0x9, 0xC,
-			0xF, 0x12, 0x15, 0x18, 0x1B,
-			0x1E, 0x21, 0x24, 0x27, 0x2A,
-			0x2D, 0x30, 0x33, 0x36, 0x39,
-			0x3C, 0x3F, 0x43, 0x47, 0x4B,
-			0x4F, 0x53, 0x57, 0x5B, 0x5F,
-			0x63, 0x67, 0x6B, 0x70, 0x75,
-			0x7A, 0x7F, 0x84, 0x89, 0x8E,
-			0x93, 0x98, 0x9D, 0xA2, 0xA8,
-			0xAE, 0xB4, 0xBA, 0xC0, 0xC6,
-			0xCC, 0xD3, 0xDA, 0xE1, 0xE8,
-			0xEF, 0xF6, 0xFF};
 
-static struct cm3629_platform_data cm36282_pdata = {
-	.model = CAPELLA_CM36282,
-	.ps_select = CM3629_PS1_ONLY,
-	.intr = PM8921_GPIO_PM_TO_SYS(JET_GPIO_PROXIMITY_INTz),
-	.levels = { 0, 0, 150, 383, 620, 4100, 6254, 7610, 8967, 65535},
-	.golden_adc = 0xE77,
-	.power = NULL,
-	.cm3629_slave_address = 0xC0>>1,
-	.ps1_thd_set = 0xD,
-	.ps1_thd_no_cal = 0xF1,
-	.ps1_thd_with_cal = 0xD,
-	.ps_calibration_rule = 1,
-	.ps_conf1_val = CM3629_PS_DR_1_80 | CM3629_PS_IT_1_6T |
-		CM3629_PS1_PERS_4,
-	.ps_conf2_val = CM3629_PS_ITB_1 | CM3629_PS_ITR_1 |
-		CM3629_PS2_INT_DIS | CM3629_PS1_INT_DIS,
-	.ps_conf3_val = CM3629_PS2_PROL_32,
-	.enable_polling_ignore = 1,
-	.mapping_table = cm3629_mapping_table,
-	.mapping_size = ARRAY_SIZE(cm3629_mapping_table),
-};
-
-static struct i2c_board_info i2c_CM36282_devices[] = {
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
+static struct resource hdmi_msm_resources[] = {
 	{
-		I2C_BOARD_INFO(CM3629_I2C_NAME, 0xC0 >> 1),
-		.platform_data = &cm36282_pdata,
-		.irq =  PM8921_GPIO_IRQ(PM8921_IRQ_BASE, JET_GPIO_PROXIMITY_INTz),
+		.name  = "hdmi_msm_qfprom_addr",
+		.start = 0x00700000,
+		.end   = 0x007060FF,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name  = "hdmi_msm_hdmi_addr",
+		.start = 0x04A00000,
+		.end   = 0x04A00FFF,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name  = "hdmi_msm_irq",
+		.start = HDMI_IRQ,
+		.end   = HDMI_IRQ,
+		.flags = IORESOURCE_IRQ,
 	},
 };
+
+static int hdmi_enable_5v(int on);
+static int hdmi_core_power(int on, int show);
+
+static mhl_driving_params jet_driving_params[] = {
+	{.format = HDMI_VFRMT_640x480p60_4_3,	.reg_a3=0xF4, .reg_a6=0x0C},
+	{.format = HDMI_VFRMT_720x480p60_16_9,	.reg_a3=0xF4, .reg_a6=0x0C},
+	{.format = HDMI_VFRMT_1280x720p60_16_9,	.reg_a3=0xF4, .reg_a6=0x0C},
+	{.format = HDMI_VFRMT_720x576p50_16_9,	.reg_a3=0xF4, .reg_a6=0x0C},
+	{.format = HDMI_VFRMT_1920x1080p24_16_9, .reg_a3=0xF4, .reg_a6=0x0C},
+	{.format = HDMI_VFRMT_1920x1080p30_16_9, .reg_a3=0xF4, .reg_a6=0x0C},
+};
+
+static struct msm_hdmi_platform_data hdmi_msm_data = {
+
+	.irq = HDMI_IRQ,
+	.enable_5v = hdmi_enable_5v,
+	.core_power = hdmi_core_power,
+	
+	.driving_params =  jet_driving_params,
+	.driving_params_count = ARRAY_SIZE(jet_driving_params),
+};
+
+static struct platform_device hdmi_msm_device = {
+	.name = "hdmi_msm",
+	.id = 0,
+	.num_resources = ARRAY_SIZE(hdmi_msm_resources),
+	.resource = hdmi_msm_resources,
+	.dev.platform_data = &hdmi_msm_data,
+};
+#endif 
+
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
+static int hdmi_enable_5v(int on)
+{
+	static int prev_on;
+	int rc;
+
+	if (on == prev_on)
+		return 0;
+
+	if (on) {
+		rc = gpio_request(JET_GPIO_V_BOOST_5V_EN, "HDMI_BOOST_5V");
+		if (rc) {
+			pr_err("'%s'(%d) gpio_request failed, rc=%d\n",
+				"HDMI_BOOST_5V", JET_GPIO_V_BOOST_5V_EN, rc);
+			goto error;
+		}
+		gpio_set_value(JET_GPIO_V_BOOST_5V_EN, 1);
+		pr_info("%s(on): success\n", __func__);
+	} else {
+		gpio_set_value(JET_GPIO_V_BOOST_5V_EN, 0);
+		gpio_free(JET_GPIO_V_BOOST_5V_EN);
+		pr_info("%s(off): success\n", __func__);
+	}
+
+	prev_on = on;
+
+	return 0;
+error:
+	return rc;
+}
+
+static int hdmi_core_power(int on, int show)
+{
+	static struct regulator *reg_8921_l23;
+	static int prev_on;
+	int rc;
+
+	if (on == prev_on)
+		return 0;
+
+	if (!reg_8921_l23) {
+		reg_8921_l23 = regulator_get(&hdmi_msm_device.dev, "hdmi_avdd");
+		if (IS_ERR(reg_8921_l23)) {
+			pr_err("could not get reg_8921_l23, rc = %ld\n",
+				PTR_ERR(reg_8921_l23));
+			return -ENODEV;
+		}
+		rc = regulator_set_voltage(reg_8921_l23, 1800000, 1800000);
+		if (rc) {
+			pr_err("set_voltage failed for 8921_l23, rc=%d\n", rc);
+			return -EINVAL;
+		}
+	}
+	if (on) {
+		rc = regulator_set_optimum_mode(reg_8921_l23, 100000);
+		if (rc < 0) {
+			pr_err("set_optimum_mode l23 failed, rc=%d\n", rc);
+			return -EINVAL;
+		}
+		rc = regulator_enable(reg_8921_l23);
+		if (rc) {
+			pr_err("'%s' regulator enable failed, rc=%d\n",
+				"hdmi_avdd", rc);
+			return rc;
+		}
+
+		pr_info("%s(on): success\n", __func__);
+	} else {
+		rc = regulator_disable(reg_8921_l23);
+		if (rc) {
+			pr_err("disable reg_8921_l23 failed, rc=%d\n", rc);
+			return -ENODEV;
+		}
+
+		rc = regulator_set_optimum_mode(reg_8921_l23, 100);
+		if (rc < 0) {
+			pr_err("set_optimum_mode l23 failed, rc=%d\n", rc);
+			return -EINVAL;
+		}
+		pr_info("%s(off): success\n", __func__);
+	}
+	prev_on = on;
+	return rc;
+}
+#endif 
+
 
 #define _GET_REGULATOR(var, name) do {				\
 	var = regulator_get(NULL, name);			\
@@ -2343,8 +2343,7 @@ static struct i2c_board_info i2c_CM36282_devices[] = {
 	}							\
 } while (0)
 
-#ifdef CONFIG_FB_MSM_HDMI_MHL
-uint32_t mhl_usb_switch_output_table[] = {
+uint32_t mhl_usb_switch_ouput_table[] = {
 	GPIO_CFG(JET_GPIO_MHL_USBz_SEL, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 };
 
@@ -2361,6 +2360,7 @@ static void config_gpio_table(uint32_t *table, int len)
 	}
 }
 
+#ifdef CONFIG_FB_MSM_HDMI_MHL
 static void jet_usb_dpdn_switch(int path)
 {
 	switch (path) {
@@ -2370,75 +2370,37 @@ static void jet_usb_dpdn_switch(int path)
 		int polarity = 1; /* high = mhl */
 		int mhl = (path == PATH_MHL);
 
-			config_gpio_table(mhl_usb_switch_output_table, ARRAY_SIZE(mhl_usb_switch_output_table));
+			config_gpio_table(mhl_usb_switch_ouput_table, ARRAY_SIZE(mhl_usb_switch_ouput_table));
 			gpio_set_value(JET_GPIO_MHL_USBz_SEL, (mhl ^ !polarity) ? 1 : 0);
 			pr_info("[CABLE]%s: Set %s path\n", __func__, mhl ? "MHL" : "USB");
 			break;
 		}
 	}
 
-#ifdef CONFIG_FB_MSM_HDMI_MHL_SII9234
+	#ifdef CONFIG_FB_MSM_HDMI_MHL
 	sii9234_change_usb_owner((path == PATH_MHL) ? 1 : 0);
-#endif
+	#endif /*CONFIG_FB_MSM_HDMI_MHL*/
 }
+#endif
 
+#ifdef CONFIG_FB_MSM_HDMI_MHL
+static struct regulator *reg_l12;
+static struct regulator *reg_l17;
+static struct regulator *reg_l9;
+static struct regulator *reg_8921_l10;
+static struct regulator *reg_8921_s2;
 uint32_t msm_hdmi_off_gpio[] = {
 	GPIO_CFG(JET_GPIO_HDMI_DDC_CLK,  0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 	GPIO_CFG(JET_GPIO_HDMI_DDC_DATA,  0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 	GPIO_CFG(JET_GPIO_HDMI_HPD,  0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 };
-
 uint32_t msm_hdmi_on_gpio[] = {
 	GPIO_CFG(JET_GPIO_HDMI_DDC_CLK,  1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 	GPIO_CFG(JET_GPIO_HDMI_DDC_DATA,  1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 	GPIO_CFG(JET_GPIO_HDMI_HPD,  1, GPIO_CFG_INPUT, GPIO_CFG_PULL_UP, GPIO_CFG_2MA),
 };
+void hdmi_hpd_feature(int enable);
 
-static struct regulator *reg_l9;
-
-static int enable_l9(bool enable)
-{
-	int rc;
-	if (!reg_l9)
-		_GET_REGULATOR(reg_l9, "8921_l9");
-	rc = regulator_set_voltage(reg_l9, 3300000, 3300000);
-	if (rc) {
-		pr_err("%s: regulator_set_voltage reg_l9 failed rc=%d\n",
-			__func__, rc);
-	}
-	rc = regulator_enable(reg_l9);
-	if (rc) {
-		pr_err("'%s' regulator enable failed, rc=%d\n",
-			"reg_l9", rc);
-	}
-	pr_info("%s(on): success\n", __func__);
-	return 0;
-}
-
-static void mhl_sii9234_1v2_power(bool enable)
-{
-	static bool prev_on;
-
-	if (enable == prev_on)
-		return;
-	if(enable && (system_rev > 0))
-		enable_l9(enable);
-	if (enable) {
-		config_gpio_table(msm_hdmi_on_gpio, ARRAY_SIZE(msm_hdmi_on_gpio));
-		hdmi_hpd_feature(1);
-		pr_info("%s(on): success\n", __func__);
-	} else {
-		config_gpio_table(msm_hdmi_off_gpio, ARRAY_SIZE(msm_hdmi_off_gpio));
-		hdmi_hpd_feature(0);
-		pr_info("%s(off): success\n", __func__);
-	}
-
-	prev_on = enable;
-}
-
-#ifdef CONFIG_FB_MSM_HDMI_MHL_SII9234
-static struct regulator *reg_8921_l10;
-static struct regulator *reg_8921_s2;
 
 static int mhl_sii9234_power_vote(bool enable)
 {
@@ -2482,21 +2444,59 @@ static int mhl_sii9234_power_vote(bool enable)
 			rc = regulator_disable(reg_8921_l10);
 			if (rc)
 				pr_warning("'%s' regulator disable failed, rc=%d\n",
-						"reg_8921_l10", rc);
+					"reg_8921_l10", rc);
 		}
 		if (reg_8921_s2) {
 			rc = regulator_disable(reg_8921_s2);
 			if (rc)
 				pr_warning("'%s' regulator disable failed, rc=%d\n",
-						"reg_8921_s2", rc);
+					"reg_8921_s2", rc);
 		}
 		pr_info("%s(off): success\n", __func__);
 	}
 	return 0;
 }
+static int enable_l9(bool enable)
+{
+	int rc;
+	if (!reg_l9)
+		_GET_REGULATOR(reg_l9, "8921_l9");
+	rc = regulator_set_voltage(reg_l9, 3300000, 3300000);
+	if (rc) {
+		pr_err("%s: regulator_set_voltage reg_l9 failed rc=%d\n",
+			__func__, rc);
+	}
+	rc = regulator_enable(reg_l9);
+	if (rc) {
+		pr_err("'%s' regulator enable failed, rc=%d\n",
+			"reg_l9", rc);
+	}
+	pr_info("%s(on): success\n", __func__);
+	return 0;
+}
 
-static struct regulator *reg_l12;
-static struct regulator *reg_l17;
+static void mhl_sii9234_1v2_power(bool enable)
+{
+	static bool prev_on;
+
+	if (enable == prev_on)
+		return;
+	
+	if(enable && (system_rev > 0))
+		enable_l9(enable);
+	if (enable) {
+		config_gpio_table(msm_hdmi_on_gpio, ARRAY_SIZE(msm_hdmi_on_gpio));
+		hdmi_hpd_feature(1);
+		pr_info("%s(on): success\n", __func__);
+	} else {
+		config_gpio_table(msm_hdmi_off_gpio, ARRAY_SIZE(msm_hdmi_off_gpio));
+		hdmi_hpd_feature(0);
+		pr_info("%s(off): success\n", __func__);
+	}
+
+	prev_on = enable;
+
+}
 
 static int mhl_sii9234_all_power(bool enable)
 {
@@ -2524,6 +2524,7 @@ static int mhl_sii9234_all_power(bool enable)
 				"reg_l12", rc);
 			return rc;
 		}
+		
 		if(system_rev > 0){
 			rc = regulator_set_voltage(reg_l9, 3300000, 3300000);
 			if (rc) {
@@ -2538,6 +2539,7 @@ static int mhl_sii9234_all_power(bool enable)
 				return rc;
 			}
 		} else {
+		
 			rc = regulator_set_voltage(reg_l17, 3300000, 3300000);
 			if (rc) {
 				pr_err("%s: regulator_set_voltage reg_l9 failed rc=%d\n",
@@ -2570,12 +2572,15 @@ static int mhl_sii9234_all_power(bool enable)
 	prev_on = enable;
 
 	return 0;
+
 }
 
+#ifdef CONFIG_FB_MSM_HDMI_MHL_SII9234
 static uint32_t mhl_gpio_table[] = {
 	GPIO_CFG(JET_GPIO_MHL_RSTz, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 	GPIO_CFG(JET_GPIO_MHL_INT, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_UP, GPIO_CFG_2MA),
 };
+
 
 static int mhl_sii9234_power(int on)
 {
@@ -2600,6 +2605,7 @@ static T_MHL_PLATFORM_DATA mhl_sii9234_device_data = {
 	.gpio_intr = JET_GPIO_MHL_INT,
 	.gpio_reset = JET_GPIO_MHL_RSTz,
 	.ci2ca = 0,
+#ifdef CONFIG_FB_MSM_HDMI_MHL
 	.mhl_usb_switch = jet_usb_dpdn_switch,
 	.mhl_1v2_power = mhl_sii9234_1v2_power,
 	.enable_5v = hdmi_enable_5v,
@@ -2614,6 +2620,7 @@ static T_MHL_PLATFORM_DATA mhl_sii9234_device_data = {
 	.abs_width_min = 0,
 	.abs_width_max = 20,
 #endif
+#endif
 	.power = mhl_sii9234_power,
 };
 
@@ -2625,21 +2632,21 @@ static struct i2c_board_info msm_i2c_gsbi8_mhl_sii9234_info[] =
 		.irq = JET_GPIO_MHL_INT
 	},
 };
-#endif /* CONFIG_FB_MSM_HDMI_MHL_SII9234 */
-#endif /* CONFIG_FB_MSM_HDMI_MHL */
+#endif
+#endif
 
 static uint32_t usb_ID_PIN_input_table[] = {
 	GPIO_CFG(JET_GPIO_USB_ID1, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 };
 
-static uint32_t usb_ID_PIN_output_table[] = {
+static uint32_t usb_ID_PIN_ouput_table[] = {
 	GPIO_CFG(JET_GPIO_USB_ID1, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 };
 
 void config_jet_usb_id_gpios(bool output)
 {
 	if (output) {
-		gpio_tlmm_config(usb_ID_PIN_output_table[0], GPIO_CFG_ENABLE);
+		gpio_tlmm_config(usb_ID_PIN_ouput_table[0], GPIO_CFG_ENABLE);
 		gpio_set_value(JET_GPIO_USB_ID1, 1);
 		pr_info("[CABLE] %s: %d output high\n",  __func__, JET_GPIO_USB_ID1);
 	} else {
@@ -2666,6 +2673,8 @@ int64_t jet_get_usbid_adc(void)
 	return adc/1000;
 }
 
+
+
 static uint32_t usbuart_pin_enable_usb_table[] = {
 	GPIO_CFG(JET_GPIO_MHL_USB_ENz, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
 };
@@ -2676,9 +2685,9 @@ static uint32_t usbuart_pin_enable_uart_table[] = {
 static void jet_usb_uart_switch(int nvbus)
 {
 	printk(KERN_INFO "%s: %s, rev=%d\n", __func__, nvbus ? "uart" : "usb", system_rev);
-	if(nvbus == 1) {
+	if(nvbus == 1) { 
 		gpio_tlmm_config(usbuart_pin_enable_uart_table[0], GPIO_CFG_ENABLE);
-	} else {
+	} else {	
 		gpio_tlmm_config(usbuart_pin_enable_usb_table[0], GPIO_CFG_ENABLE);
 	}
 }
@@ -3231,6 +3240,12 @@ static void gsbi_qup_i2c_gpio_config(int adap_id, int config_type)
 	}
 }
 
+static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi2_pdata = {
+	.clk_freq = 100000,
+	.src_clk_rate = 24000000,
+	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
+};
+
 static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi4_pdata = {
 	.clk_freq = 400000,
 	.src_clk_rate = 24000000,
@@ -3243,23 +3258,101 @@ static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi3_pdata = {
 	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
 };
 
-static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi5_pdata = {
-	.clk_freq = 400000,
-	.src_clk_rate = 24000000,
-	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
-};
-
 static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi8_pdata = {
 	.clk_freq = 400000,
 	.src_clk_rate = 24000000,
 	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
-	.share_uart_flag = 1,	/* check if QUP-I2C and Uart share the gisb */
 };
 
 static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi12_pdata = {
 	.clk_freq = 400000,
 	.src_clk_rate = 24000000,
 	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
+};
+
+static struct msm_i2c_platform_data msm8960_i2c_qup_gsbi5_pdata = {
+	.clk_freq = 400000,
+	.src_clk_rate = 24000000,
+	.msm_i2c_config_gpio = gsbi_qup_i2c_gpio_config,
+};
+
+static struct bma250_platform_data gsensor_bma250_platform_data = {
+	.intr = JET_GPIO_GSENSOR_INT,
+	.chip_layout = 1,
+};
+
+static struct akm8975_platform_data compass_platform_data = {
+	.layouts = JET_LAYOUTS,
+};
+
+static struct r3gd20_gyr_platform_data gyro_platform_data = {
+       .fs_range = R3GD20_GYR_FS_2000DPS,
+       .axis_map_x = 1,
+       .axis_map_y = 0,
+       .axis_map_z = 2,
+       .negate_x = 0,
+       .negate_y = 1,
+       .negate_z = 0,
+
+       .poll_interval = 50,
+       .min_interval = R3GD20_MIN_POLL_PERIOD_MS,
+       .watermark = 0,
+       .fifomode = 0,
+};
+
+static struct i2c_board_info msm_i2c_gsbi12_info[] = {
+	{
+		I2C_BOARD_INFO(BMA250_I2C_NAME, 0x30 >> 1),
+		.platform_data = &gsensor_bma250_platform_data,
+		.irq = MSM_GPIO_TO_INT(JET_GPIO_GSENSOR_INT),
+	},
+	{
+		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x1A >> 1),
+		.platform_data = &compass_platform_data,
+		.irq = MSM_GPIO_TO_INT(JET_GPIO_COMPASS_INT),
+	},
+	{
+		I2C_BOARD_INFO(R3GD20_GYR_DEV_NAME, 0xD0 >> 1),
+		.platform_data = &gyro_platform_data,
+	},
+};
+
+static struct mpu3050_platform_data mpu3050_data = {
+	.int_config = 0x10,
+	.orientation = {  0,  1, 0,
+			 -1,  0, 0,
+			  0,  0, 1 },
+	.level_shifter = 0,
+
+	.accel = {
+		.get_slave_descr = get_accel_slave_descr,
+		.adapt_num = MSM_8960_GSBI12_QUP_I2C_BUS_ID,
+		.bus = EXT_SLAVE_BUS_SECONDARY,
+		.address = 0x30 >> 1,
+			.orientation = { 1, 0, 0,
+					 0, 1, 0,
+					 0, 0, 1 },
+
+	},
+
+	.compass = {
+		.get_slave_descr = get_compass_slave_descr,
+		.adapt_num = MSM_8960_GSBI12_QUP_I2C_BUS_ID,
+		.bus = EXT_SLAVE_BUS_PRIMARY,
+		.address = 0x1A >> 1,
+			.orientation = { 1, 0, 0,
+					 0, 1, 0,
+					 0, 0, 1 },
+	},
+};
+
+
+static struct i2c_board_info __initdata mpu3050_GSBI12_boardinfo[] = {
+	{
+		I2C_BOARD_INFO("mpu3050", 0xD0 >> 1),
+		.irq = MSM_GPIO_TO_INT(JET_GPIO_GYRO_INT),
+		.platform_data = &mpu3050_data,
+	},
 };
 
 static struct platform_device msm_device_saw_core0 = {
@@ -3433,6 +3526,9 @@ static struct platform_device *jet_devices[] __initdata = {
 	&msm_cpudai_afe_02_rx,
 	&msm_cpudai_afe_02_tx,
 	&msm_pcm_afe,
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
+	&hdmi_msm_device,
+#endif
 	&msm_compr_dsp,
 	&msm_cpudai_incall_music_rx,
 	&msm_cpudai_incall_record_rx,
@@ -3453,11 +3549,14 @@ static struct platform_device *jet_devices[] __initdata = {
 
 static void __init msm8960_i2c_init(void)
 {
-	msm8960_device_qup_i2c_gsbi3.dev.platform_data =
-					&msm8960_i2c_qup_gsbi3_pdata;
-
 	msm8960_device_qup_i2c_gsbi4.dev.platform_data =
 					&msm8960_i2c_qup_gsbi4_pdata;
+
+	msm8960_device_qup_i2c_gsbi2.dev.platform_data =
+					&msm8960_i2c_qup_gsbi2_pdata;
+
+	msm8960_device_qup_i2c_gsbi3.dev.platform_data =
+					&msm8960_i2c_qup_gsbi3_pdata;
 
 	msm8960_device_qup_i2c_gsbi5.dev.platform_data =
 					&msm8960_i2c_qup_gsbi5_pdata;
@@ -3863,7 +3962,48 @@ static struct msm_rpmrs_platform_data msm_rpmrs_data __initdata = {
 static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 	.mode = MSM_PM_BOOT_CONFIG_TZ,
 };
+static uint8_t cm3629_mapping_table[] = {0x0, 0x3, 0x6, 0x9, 0xC,
+			0xF, 0x12, 0x15, 0x18, 0x1B,
+			0x1E, 0x21, 0x24, 0x27, 0x2A,
+			0x2D, 0x30, 0x33, 0x36, 0x39,
+			0x3C, 0x3F, 0x43, 0x47, 0x4B,
+			0x4F, 0x53, 0x57, 0x5B, 0x5F,
+			0x63, 0x67, 0x6B, 0x70, 0x75,
+			0x7A, 0x7F, 0x84, 0x89, 0x8E,
+			0x93, 0x98, 0x9D, 0xA2, 0xA8,
+			0xAE, 0xB4, 0xBA, 0xC0, 0xC6,
+			0xCC, 0xD3, 0xDA, 0xE1, 0xE8,
+			0xEF, 0xF6, 0xFF};
 
+static struct cm3629_platform_data cm36282_pdata = {
+	.model = CAPELLA_CM36282,
+	.ps_select = CM3629_PS1_ONLY,
+	.intr = PM8921_GPIO_PM_TO_SYS(JET_GPIO_PROXIMITY_INTz),
+	.levels = { 0, 0, 150, 383, 620, 4100, 6254, 7610, 8967, 65535},
+	.golden_adc = 0xE77,
+	.power = NULL,
+	.cm3629_slave_address = 0xC0>>1,
+	.ps1_thd_set = 0xD,
+	.ps1_thd_no_cal = 0xF1,
+	.ps1_thd_with_cal = 0xD,
+	.ps_calibration_rule = 1,
+	.ps_conf1_val = CM3629_PS_DR_1_80 | CM3629_PS_IT_1_6T |
+		CM3629_PS1_PERS_4,
+	.ps_conf2_val = CM3629_PS_ITB_1 | CM3629_PS_ITR_1 |
+		CM3629_PS2_INT_DIS | CM3629_PS1_INT_DIS,
+	.ps_conf3_val = CM3629_PS2_PROL_32,
+	.enable_polling_ignore = 1,
+	.mapping_table = cm3629_mapping_table,
+	.mapping_size = ARRAY_SIZE(cm3629_mapping_table),
+};
+
+static struct i2c_board_info i2c_CM36282_devices[] = {
+	{
+		I2C_BOARD_INFO(CM3629_I2C_NAME, 0xC0 >> 1),
+		.platform_data = &cm36282_pdata,
+		.irq =  PM8921_GPIO_IRQ(PM8921_IRQ_BASE, JET_GPIO_PROXIMITY_INTz),
+	},
+};
 #ifdef CONFIG_I2C
 #define I2C_SURF 1
 #define I2C_FFA  (1 << 1)
@@ -4101,7 +4241,7 @@ static void __init jet_init(void)
 	jet_pm8921_gpio_mpp_init();
 	msm_region_id_gpio_init();
 	platform_add_devices(jet_devices, ARRAY_SIZE(jet_devices));
-	jet_init_camera();
+	msm8960_init_cam();
 	jet_init_mmc();
 	register_i2c_devices();
 	jet_init_fb();
@@ -4167,3 +4307,4 @@ MACHINE_START(JET, "jet")
 	.init_very_early = jet_early_memory,
 	.restart = msm_restart,
 MACHINE_END
+

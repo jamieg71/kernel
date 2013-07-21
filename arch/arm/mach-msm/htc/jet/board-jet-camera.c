@@ -29,163 +29,13 @@
 #include <linux/htc_flashlight.h>
 #endif
 
-#ifdef CONFIG_MSM_CAMERA
 #define MSM_8960_GSBI4_QUP_I2C_BUS_ID 4	
 static struct platform_device msm_camera_server = {
 	.name = "msm_cam_server",
 	.id = 0,
 };
 
-static struct gpiomux_setting cam_settings[11] = {
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_8MA,
-		.pull = GPIOMUX_PULL_DOWN,
-		.dir = GPIOMUX_IN,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_1, 
-		.drv = GPIOMUX_DRV_8MA,
-		.pull = GPIOMUX_PULL_NONE,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_8MA,
-		.pull = GPIOMUX_PULL_NONE,
-		.dir = GPIOMUX_OUT_LOW,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_1, 
-		.drv = GPIOMUX_DRV_8MA,
-		.pull = GPIOMUX_PULL_NONE,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_2, 
-		.drv = GPIOMUX_DRV_8MA,
-		.pull = GPIOMUX_PULL_NONE,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_4MA,
-		.pull = GPIOMUX_PULL_DOWN,
-		.dir = GPIOMUX_IN,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_2, 
-		.drv = GPIOMUX_DRV_2MA,
-		.pull = GPIOMUX_PULL_NONE,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_2MA,
-		.pull = GPIOMUX_PULL_NONE,
-		.dir = GPIOMUX_IN,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_2MA,
-		.pull = GPIOMUX_PULL_DOWN,
-		.dir = GPIOMUX_IN,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_2MA,
-		.pull = GPIOMUX_PULL_NONE,
-		.dir = GPIOMUX_OUT_HIGH,
-	},
-
-	{
-		.func = GPIOMUX_FUNC_GPIO, 
-		.drv = GPIOMUX_DRV_2MA,
-		.pull = GPIOMUX_PULL_NONE,
-		.dir = GPIOMUX_OUT_LOW,
-	},
-
-};
-
-static struct msm_gpiomux_config jet_cam_configs[] = {
-	{
-		.gpio = JET_GPIO_CAM_MCLK1,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[4], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[2], 
-		},
-	},
-	{
-		.gpio = JET_GPIO_CAM_MCLK0,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[1], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[2], 
-		},
-	},
-	{
-		.gpio = JET_GPIO_CAM_I2C_DAT,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[3], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[2],
-		},
-	},
-	{
-		.gpio = JET_GPIO_CAM_I2C_CLK,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[3], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[2],
-		},
-	},
-	{
-		.gpio = JET_GPIO_RAW_INTR0,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[7], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[8], 
-		},
-	},
-	{
-		.gpio = JET_GPIO_RAW_INTR1,
-		.settings = {
-			[GPIOMUX_ACTIVE]    = &cam_settings[7], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[8], 
-		},
-	},
-	
-	{
-		.gpio      = JET_GPIO_MCAM_SPI_CLK,
-		.settings = {
-			[GPIOMUX_ACTIVE] = &cam_settings[6], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[10],
-		},
-	},
-	{
-		.gpio      = JET_GPIO_MCAM_SPI_CS0,
-		.settings = {
-			[GPIOMUX_ACTIVE] = &cam_settings[6], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[10], 
-		},
-	},
-	{
-		.gpio      = JET_GPIO_MCAM_SPI_DI,
-		.settings = {
-			[GPIOMUX_ACTIVE] = &cam_settings[6], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[10],
-		},
-	},
-	{
-		.gpio      = JET_GPIO_MCAM_SPI_DO,
-		.settings = {
-			[GPIOMUX_ACTIVE] = &cam_settings[6], 
-			[GPIOMUX_SUSPENDED] = &cam_settings[10],
-		},
-	},
-};
-
+#ifdef CONFIG_MSM_CAMERA 
 static struct msm_bus_vectors cam_init_vectors[] = {
 	{
 		.src = MSM_BUS_MASTER_VFE,
@@ -378,8 +228,8 @@ static int jet_use_ext_1v2(void)
 		return 0;
 }
 
-#define JET_V_RAW_1V8_EN PM8921_GPIO_PM_TO_SYS(JET_GPIO_RAW_1V8_EN)
-#define JET_V_RAW_1V2_EN PM8921_GPIO_PM_TO_SYS(JET_GPIO_RAW_1V2_EN)
+#define JET_V_RAW_1V8_EN PM8921_GPIO_PM_TO_SYS(JET_PMGGPIO_RAW_1V8_EN)
+#define JET_V_RAW_1V2_EN PM8921_GPIO_PM_TO_SYS(JET_PMGGPIO_RAW_1V2_EN)
 static int jet_rawchip_vreg_on(void)
 {
 	int rc;
@@ -1354,6 +1204,7 @@ static void config_cam_id(int status)
 		gpio_tlmm_config(cam_id_gpio_end[0], GPIO_CFG_ENABLE);
 }
 
+#ifdef CONFIG_I2C
 static struct i2c_board_info msm_camera_boardinfo[] = {
 #ifdef CONFIG_S5K3H2YX
 	{
@@ -1393,15 +1244,11 @@ struct msm_camera_board_info jet_camera_board_info_2nd = {
 	.board_info = msm_camera_boardinfo_2nd,
 	.num_i2c_board_info = ARRAY_SIZE(msm_camera_boardinfo_2nd),
 };
-#endif /* CONFIG_MSM_CAMERA */
+#endif
 
-void __init jet_init_camera(void)
+void __init msm8960_init_cam(void)
 {
-#ifdef CONFIG_MSM_CAMERA
-	pr_info("%s", __func__);
-
-	msm_gpiomux_install(jet_cam_configs,
-			ARRAY_SIZE(jet_cam_configs));
+        pr_info("%s", __func__)
 
 	config_cam_id(1); 
 	msleep(2);
@@ -1428,5 +1275,5 @@ void __init jet_init_camera(void)
 	platform_device_register(&msm8960_device_ispif);
 	platform_device_register(&msm8960_device_vfe);
 	platform_device_register(&msm8960_device_vpe);
-#endif /* CONFIG_MSM_CAMERA */
-}
+ }
+ #endif /* CONFIG_MSM_CAMERA */
