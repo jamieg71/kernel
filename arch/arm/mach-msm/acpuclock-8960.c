@@ -92,23 +92,33 @@ static struct msm_bus_scale_pdata bus_scale_data __initdata = {
 };
 
 static struct l2_level l2_freq_tbl[] __initdata = {
-	[0]  = { {  384000, PLL_8, 0, 0x00 }, 1050000, 1050000, 1 },
-	[1]  = { {  486000, HFPLL, 2, 0x24 }, 1050000, 1050000, 2 },
-	[2]  = { {  594000, HFPLL, 1, 0x16 }, 1050000, 1050000, 2 },
-	[3]  = { {  702000, HFPLL, 1, 0x1A }, 1050000, 1050000, 4 },
-	[4]  = { {  810000, HFPLL, 1, 0x1E }, 1050000, 1050000, 4 },
-	[5]  = { {  918000, HFPLL, 1, 0x22 }, 1150000, 1150000, 5 },
-	[6]  = { { 1026000, HFPLL, 1, 0x26 }, 1150000, 1150000, 5 },
-	[7]  = { { 1134000, HFPLL, 1, 0x2A }, 1150000, 1150000, 5 },
-	[8]  = { { 1242000, HFPLL, 1, 0x2E }, 1150000, 1150000, 5 },
-	[9]  = { { 1350000, HFPLL, 1, 0x32 }, 1150000, 1150000, 5 },
+	[0]  = { {  192000, PLL_8, 0, 0x00 }, 1050000, 1050000, 0 },
+	[1]  = { {  432000, HFPLL, 2, 0x20 }, 1050000, 1050000, 2 },
+	[2]  = { {  486000, HFPLL, 2, 0x24 }, 1050000, 1050000, 2 },
+	[3]  = { {  540000, HFPLL, 2, 0x28 }, 1050000, 1050000, 2 },
+	[4]  = { {  594000, HFPLL, 1, 0x16 }, 1050000, 1050000, 2 },
+	[5]  = { {  648000, HFPLL, 1, 0x18 }, 1050000, 1050000, 4 },
+	[6]  = { {  702000, HFPLL, 1, 0x1A }, 1050000, 1050000, 4 },
+	[7]  = { {  756000, HFPLL, 1, 0x1C }, 1150000, 1150000, 4 },
+	[8]  = { {  810000, HFPLL, 1, 0x1E }, 1150000, 1150000, 4 },
+	[9]  = { {  864000, HFPLL, 1, 0x20 }, 1150000, 1150000, 4 },
+	[10] = { {  918000, HFPLL, 1, 0x22 }, 1150000, 1150000, 6 },
+	[11] = { {  972000, HFPLL, 1, 0x24 }, 1150000, 1150000, 6 },
+	[12] = { { 1026000, HFPLL, 1, 0x26 }, 1150000, 1150000, 6 },
+	[13] = { { 1080000, HFPLL, 1, 0x28 }, 1150000, 1150000, 6 },
+	[14] = { { 1134000, HFPLL, 1, 0x2A }, 1150000, 1150000, 6 },
+	[15] = { { 1188000, HFPLL, 1, 0x2C }, 1150000, 1150000, 6 },
+	[16] = { { 1242000, HFPLL, 1, 0x2E }, 1150000, 1150000, 6 },
+	[17] = { { 1296000, HFPLL, 1, 0x30 }, 1150000, 1150000, 6 },
+	[18] = { { 1350000, HFPLL, 1, 0x32 }, 1150000, 1150000, 6 },
 	{ }
 };
 
 #define AVS(x) .avsdscr_setting = (x)
 
 static struct acpu_level freq_tbl_PVS0[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   950000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   900000, AVS(0x40001F) },
+	{ 1, {   384000, HFPLL, 2, 0x18 }, L2(1),   950000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   950000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   975000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),  1000000, AVS(0x0) },
@@ -126,7 +136,8 @@ static struct acpu_level freq_tbl_PVS0[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS1[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   925000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   850000, AVS(0x40001F) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   925000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   925000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   950000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   975000, AVS(0x0) },
@@ -144,7 +155,8 @@ static struct acpu_level freq_tbl_PVS1[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS2[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   900000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   825000, AVS(0x4000FF) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   850000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   900000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   925000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   950000, AVS(0x0) },
@@ -162,7 +174,8 @@ static struct acpu_level freq_tbl_PVS2[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS3[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   900000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   825000, AVS(0x4000FF) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   900000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   900000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   900000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   925000, AVS(0x0) },
@@ -180,7 +193,8 @@ static struct acpu_level freq_tbl_PVS3[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS4[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   875000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   825000, AVS(0x4000FF) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   900000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   875000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   875000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   900000, AVS(0x0) },
@@ -198,7 +212,8 @@ static struct acpu_level freq_tbl_PVS4[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS5[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   875000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   825000, AVS(0x4000FF) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   900000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   875000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   875000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   875000, AVS(0x0) },
@@ -216,7 +231,8 @@ static struct acpu_level freq_tbl_PVS5[] __initdata = {
 };
 
 static struct acpu_level freq_tbl_PVS6[] __initdata = {
-	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(0),   850000, AVS(0x70001F) },
+	{ 1, {   192000, PLL_8, 0, 0x00 }, L2(0),   825000, AVS(0x4000FF) },
+	{ 1, {   384000, HFPLL, 0, 0x18 }, L2(1),   900000, AVS(0x0) },
 	{ 1, {   486000, HFPLL, 2, 0x24 }, L2(4),   850000, AVS(0x0) },
 	{ 1, {   594000, HFPLL, 1, 0x16 }, L2(4),   850000, AVS(0x0) },
 	{ 1, {   702000, HFPLL, 1, 0x1A }, L2(4),   850000, AVS(0x0) },
@@ -252,7 +268,7 @@ static struct acpuclk_krait_params acpuclk_8960_params __initdata = {
 	.l2_freq_tbl_size = sizeof(l2_freq_tbl),
 	.bus_scale = &bus_scale_data,
 	.pte_efuse_phys = 0x007000C0,
-	.stby_khz = 384000,
+	.stby_khz = 192000,
 };
 
 static int __init acpuclk_8960_probe(struct platform_device *pdev)
@@ -272,3 +288,4 @@ static int __init acpuclk_8960_init(void)
 	return platform_driver_probe(&acpuclk_8960_driver, acpuclk_8960_probe);
 }
 device_initcall(acpuclk_8960_init);
+
