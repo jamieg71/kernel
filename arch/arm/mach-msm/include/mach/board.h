@@ -524,20 +524,6 @@ struct msm_fb_platform_data {
 	char ext_panel_name[PANEL_NAME_MAX_LEN];
 };
 
-#define HDMI_VFRMT_640x480p60_4_3 0
-#define HDMI_VFRMT_720x480p60_16_9 2
-#define HDMI_VFRMT_1280x720p60_16_9 3
-#define HDMI_VFRMT_720x576p50_16_9 17
-#define HDMI_VFRMT_1920x1080p24_16_9 31
-#define HDMI_VFRMT_1920x1080p30_16_9 33
-
-typedef struct
-{
-	uint8_t format;
-	uint8_t reg_a3;
-	uint8_t reg_a6;
-} mhl_driving_params;
-
 struct msm_hdmi_platform_data {
 	int irq;
 	int (*cable_detect)(int insert);
@@ -549,21 +535,29 @@ struct msm_hdmi_platform_data {
 	int (*gpio_config)(int on);
 	int (*init_irq)(void);
 	bool (*check_hdcp_hw_support)(void);
+	bool (*source)(void);
 	bool is_mhl_enabled;
+#if defined(CONFIG_MACH_HTC) && defined(CONFIG_FB_MSM_HDMI_MHL)
 	mhl_driving_params *driving_params;
 	int driving_params_count;
+#endif
 };
 
 struct msm_mhl_platform_data {
 	int irq;
-	
+	/* GPIO no. for mhl intr */
 	uint32_t gpio_mhl_int;
-	
+	/* GPIO no. for mhl block reset */
 	uint32_t gpio_mhl_reset;
-	
+	/*
+	 * below gpios are specific to targets
+	 * that have the integrated MHL soln.
+	 */
+	/* GPIO no. for mhl block power */
 	uint32_t gpio_mhl_power;
-	
+	/* GPIO no. for hdmi-mhl mux */
 	uint32_t gpio_hdmi_mhl_mux;
+	bool mhl_enabled;
 };
 
 struct msm_i2c_platform_data {
@@ -579,9 +573,9 @@ struct msm_i2c_platform_data {
 	int use_gsbi_shared_mode;
 	int keep_ahb_clk_on;
 	void (*msm_i2c_config_gpio)(int iface, int config_type);
-      #ifdef CONFIG_MACH_HTC
-        int share_uart_flag;
-      #endif
+#ifdef CONFIG_MACH_HTC
+	int share_uart_flag;
+#endif
 };
 
 struct msm_i2c_ssbi_platform_data {
@@ -655,70 +649,10 @@ struct msm_usb_host_platform_data;
 int msm_add_host(unsigned int host,
 		struct msm_usb_host_platform_data *plat);
 #if defined(CONFIG_USB_FUNCTION_MSM_HSUSB) \
-	|| defined(CONFIG_USB_MSM_72K) || defined(CONFIG_USB_MSM_72K_MODULE) || defined(CONFIG_USB_CI13XXX_MSM)
+	|| defined(CONFIG_USB_MSM_72K) || defined(CONFIG_USB_MSM_72K_MODULE)
 void msm_hsusb_set_vbus_state(int online);
-void msm_otg_set_vbus_state(int online);
-enum usb_connect_type {
-	CONNECT_TYPE_CLEAR = -2,
-	CONNECT_TYPE_UNKNOWN = -1,
-	CONNECT_TYPE_NONE = 0,
-	CONNECT_TYPE_USB,
-	CONNECT_TYPE_AC,
-	CONNECT_TYPE_9V_AC,
-	CONNECT_TYPE_WIRELESS,
-	CONNECT_TYPE_INTERNAL,
-	CONNECT_TYPE_UNSUPPORTED,
-#ifdef CONFIG_MACH_VERDI_LTE
-	
-	CONNECT_TYPE_USB_9V_AC,
-#endif
-	CONNECT_TYPE_MHL_AC,
-};
 #else
 static inline void msm_hsusb_set_vbus_state(int online) {}
-#endif
-
-struct t_usb_status_notifier{
-	struct list_head notifier_link;
-	const char *name;
-	void (*func)(int cable_type);
-};
-int htc_usb_register_notifier(struct t_usb_status_notifier *notifer);
-int usb_get_connect_type(void);
-static LIST_HEAD(g_lh_usb_notifier_list);
-
-struct t_cable_status_notifier{
-	struct list_head cable_notifier_link;
-	const char *name;
-	void (*func)(int cable_type);
-};
-int cable_detect_register_notifier(struct t_cable_status_notifier *);
-static LIST_HEAD(g_lh_cable_detect_notifier_list);
-
-struct t_owe_charging_notifier{
-	struct list_head owe_charging_notifier_link;
-	const char *name;
-	void (*func)(int charging_type);
-};
-int owe_charging_register_notifier(struct t_owe_charging_notifier *);
-static LIST_HEAD(g_lh_owe_charging_notifier_list);
-
-struct t_mhl_status_notifier{
-	struct list_head mhl_notifier_link;
-	const char *name;
-	void (*func)(bool isMHL, int charging_type);
-};
-int mhl_detect_register_notifier(struct t_mhl_status_notifier *);
-static LIST_HEAD(g_lh_mhl_detect_notifier_list);
-
-#if (defined(CONFIG_USB_OTG) && defined(CONFIG_USB_OTG_HOST))
-struct t_usb_host_status_notifier{
-	struct list_head usb_host_notifier_link;
-	const char *name;
-	void (*func)(bool cable_in);
-};
-int usb_host_detect_register_notifier(struct t_usb_host_status_notifier *);
-static LIST_HEAD(g_lh_usb_host_detect_notifier_list);
 #endif
 
 void msm_snddev_init(void);
@@ -734,4 +668,3 @@ extern unsigned int msm_shared_ram_phys; /* defined in arch/arm/mach-msm/io.c */
 
 
 #endif
-

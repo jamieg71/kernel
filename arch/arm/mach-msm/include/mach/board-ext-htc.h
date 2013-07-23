@@ -21,6 +21,71 @@
 #define MFG_BUILD	1
 #define ENG_BUILD	2
 
+#if defined(CONFIG_USB_FUNCTION_MSM_HSUSB) \
+	|| defined(CONFIG_USB_MSM_72K) || defined(CONFIG_USB_MSM_72K_MODULE) \
+	|| defined(CONFIG_USB_CI13XXX_MSM)
+void msm_otg_set_vbus_state(int online);
+
+enum usb_connect_type {
+	CONNECT_TYPE_CLEAR = -2,
+	CONNECT_TYPE_UNKNOWN = -1,
+	CONNECT_TYPE_NONE = 0,
+	CONNECT_TYPE_USB,
+	CONNECT_TYPE_AC,
+	CONNECT_TYPE_9V_AC,
+	CONNECT_TYPE_WIRELESS,
+	CONNECT_TYPE_INTERNAL,
+	CONNECT_TYPE_UNSUPPORTED,
+#ifdef CONFIG_MACH_VERDI_LTE
+	CONNECT_TYPE_USB_9V_AC,
+#endif
+	CONNECT_TYPE_MHL_AC,
+};
+#endif
+
+struct t_usb_status_notifier {
+	struct list_head notifier_link;
+	const char *name;
+	void (*func)(int cable_type);
+};
+int htc_usb_register_notifier(struct t_usb_status_notifier *notifer);
+int usb_get_connect_type(void);
+static LIST_HEAD(g_lh_usb_notifier_list);
+
+struct t_cable_status_notifier{
+	struct list_head cable_notifier_link;
+	const char *name;
+	void (*func)(int cable_type);
+};
+int cable_detect_register_notifier(struct t_cable_status_notifier *);
+static LIST_HEAD(g_lh_cable_detect_notifier_list);
+
+struct t_owe_charging_notifier{
+	struct list_head owe_charging_notifier_link;
+	const char *name;
+	void (*func)(int charging_type);
+};
+int owe_charging_register_notifier(struct t_owe_charging_notifier *);
+static LIST_HEAD(g_lh_owe_charging_notifier_list);
+
+struct t_mhl_status_notifier{
+	struct list_head mhl_notifier_link;
+	const char *name;
+	void (*func)(bool isMHL, int charging_type);
+};
+int mhl_detect_register_notifier(struct t_mhl_status_notifier *);
+static LIST_HEAD(g_lh_mhl_detect_notifier_list);
+
+#if (defined(CONFIG_USB_OTG) && defined(CONFIG_USB_OTG_HOST))
+struct t_usb_host_status_notifier{
+	struct list_head usb_host_notifier_link;
+	const char *name;
+	void (*func)(bool cable_in);
+};
+int usb_host_detect_register_notifier(struct t_usb_host_status_notifier *);
+static LIST_HEAD(g_lh_usb_host_detect_notifier_list);
+#endif
+
 int board_mfg_mode(void);
 
 int board_build_flag(void);
@@ -32,6 +97,14 @@ extern int emmc_partition_read_proc(char *page, char **start, off_t off,
 
 extern int dying_processors_read_proc(char *page, char **start, off_t off,
 		int count, int *eof, void *data);
+
+#ifdef CONFIG_FB_MSM_HDMI_MHL
+typedef struct {
+	uint8_t format;
+	uint8_t reg_a3;
+	uint8_t reg_a6;
+} mhl_driving_params;
+#endif
 
 #ifdef CONFIG_MSM_CAMERA
 enum msm_camera_csi_data_format {
@@ -119,4 +192,3 @@ struct camera_vreg_t {
 #endif /* CONFIG_MSM_CAMERA */
 
 #endif /* __ASM_ARCH_MSM_BOARD_EXT_HTC_H */
-

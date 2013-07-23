@@ -63,8 +63,8 @@ extern int msm_pm8921_regulator_pdata_len __devinitdata;
 #define JET_GPIO_NFC_I2C_SCL			(13)
 #define JET_GPIO_NC_GPIO_14			(14)
 #define JET_GPIO_SIM_CD				(15)
-#define JET_GPIO_TP_I2C_SDA		(16)
-#define JET_GPIO_TP_I2C_SCL		(17)
+#define JET_GPIO_TP_I2C_DAT			(16)
+#define JET_GPIO_TP_I2C_CLK			(17)
 #define JET_GPIO_CAM_I2C_DAT			(20)
 #define JET_GPIO_CAM_I2C_CLK			(21)
 #define JET_GPIO_AC_I2C_SDA			(36)
@@ -328,8 +328,8 @@ extern int msm_pm8921_regulator_pdata_len __devinitdata;
 #define JET_GPIO_NC_PMGPIO_40		PMGPIO(40)
 #define JET_GPIO_NC_PMGPIO_41		PMGPIO(41)
 #define JET_GPIO_NC_PMGPIO_42		PMGPIO(42)
-#define JET_PMGPIO_RAW_1V2_EN		PMGPIO(43)
-#define JET_PMGPIO_RAW_1V8_EN		PMGPIO(44)
+#define JET_GPIO_RAW_1V2_EN		PMGPIO(43)
+#define JET_GPIO_RAW_1V8_EN		PMGPIO(44)
 
 /* XB GPIO */
 #define JET_GPIO_V_CAM2_D1V2_EN		(79)
@@ -341,7 +341,7 @@ void jet_lcd_id_power(int pull);
 
 extern struct msm_camera_board_info jet_camera_board_info;
 
-void msm8960_init_cam(void);
+void __init jet_init_camera(void);
 void jet_init_fb(void);
 void __init jet_init_pmic(void);
 void jet_init_mmc(void);
@@ -354,5 +354,9 @@ int __init jet_init_keypad(void);
 #ifdef CONFIG_MSM_CACHE_DUMP
 extern struct msm_cache_dump_platform_data msm8960_cache_dump_pdata;
 #endif
-#endif
 
+#ifdef CONFIG_FB_MSM_HDMI_MSM_PANEL
+int hdmi_enable_5v(int on);
+extern void hdmi_hpd_feature(int enable);
+#endif
+#endif
