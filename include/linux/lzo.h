@@ -43,3 +43,4 @@ int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
 #define LZO_E_INVALID_ARGUMENT		(-10)
 
 #endif
+
